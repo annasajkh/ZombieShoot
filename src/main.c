@@ -39,7 +39,7 @@ static void spawn_bullet(void* sender)
 
         bullet_dir = Vector2Normalize(bullet_dir);
 
-        Bullet* bullet = malloc(sizeof(Bullet));
+        Bullet* bullet = alloca(sizeof(Bullet));
 
         if (bullet == NULL)
         {
@@ -57,7 +57,7 @@ static void spawn_bullet(void* sender)
 
 static void spawn_zombie(void* sender)
 {
-    Zombie* zombie = malloc(sizeof(Zombie));
+    Zombie* zombie = alloca(sizeof(Zombie));
 
     if (zombie == NULL)
     {
@@ -66,7 +66,7 @@ static void spawn_zombie(void* sender)
         exit(1);
     }
 
-    zombie_init(zombie, ((Player*)sender)->entity, (Vector2){ 100, 100 }, true);
+    zombie_init(zombie, ((Player*)sender)->entity, (Vector2){ 100, 100 }, false);
 
     arrpush(zombies, *zombie);
 }
@@ -74,7 +74,7 @@ static void spawn_zombie(void* sender)
 
 static void init_game()
 {
-    // repopulate bullets if it exist
+    // release bullets if it exist
     if (bullets != NULL)
     {
         for (size_t i = 0; i < arrlen(bullets); i++)
@@ -85,11 +85,9 @@ static void init_game()
         }
 
         arrfree(bullets);
-
-        bullets = NULL;
     }
 
-    // repopulate zombies if it exist
+    // release zombies if it exist
     if (zombies != NULL)
     {
         for (size_t i = 0; i < arrlen(zombies); i++)
@@ -100,8 +98,6 @@ static void init_game()
         }
         
         arrfree(zombies);
-
-        zombies = NULL;
     }
 
 
@@ -183,6 +179,13 @@ static void update()
         bullet_update(&(bullets[i]));
     }
 
+    for (size_t i = 0; i < arrlen(zombies); i++)
+    {
+        Zombie zombie = zombies[i];
+
+        zombie_update(&zombie);
+    }
+
     for (size_t i = arrlen(bullets); i-- > 0;)
     {
         Bullet bullet = bullets[i];
@@ -192,8 +195,8 @@ static void update()
             bullet.entity->position.y > GetScreenHeight() + bullet.radius ||
             bullet.entity->position.y < -bullet.radius)
         {
-            arrdel(bullets, i);
             bullet_delete(&bullet);
+            arrdel(bullets, i);
         }
     }
 }

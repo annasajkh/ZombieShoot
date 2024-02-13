@@ -29,6 +29,7 @@ void bullet_init(Bullet* bullet, Vector2 position, Vector2 direction, bool is_on
     bullet->radius = 5;
     bullet->speed = 1500;
     bullet->direction = direction;
+
     bullet->is_on_the_heap = is_on_the_heap;
 }
 

@@ -9,8 +9,8 @@ typedef struct Zombie
 
     float speed;
     float damage;
-
     float radius;
+
     bool is_on_the_heap;
 } Zombie;
 

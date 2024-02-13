@@ -79,8 +79,6 @@ void player_update(Player* player)
     player->entity->velocity.y = direction.y;
 
     entity_update(player->entity);
-
-    
 }
 
 void player_draw(Player* player)
