@@ -29,6 +29,7 @@ void zombie_init(Zombie* zombie, Entity* target, Vector2 position, bool is_on_th
 
     zombie->speed = 100;
     zombie->damage = 10;
+
     zombie->radius = 20;
 
     zombie->is_on_the_heap = is_on_the_heap;

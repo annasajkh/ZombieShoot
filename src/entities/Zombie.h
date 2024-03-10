@@ -16,6 +16,8 @@ typedef struct Zombie
 
 void zombie_init(Zombie* zombie, Entity* target, Vector2 position, bool is_on_the_heap);
 
+void zombie_hurt(Zombie* zombie, float damage);
+
 void zombie_update(Zombie* zombie);
 void zombie_draw(Zombie* zombie);
 

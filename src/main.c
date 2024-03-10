@@ -6,6 +6,7 @@
 #ifndef _MSC_VER
 #include "stdlib.h"
 #endif
+#include <time.h>
 
 #include <raylib.h>
 #include <raymath.h>
@@ -25,6 +26,9 @@ static Zombie* zombies = NULL;
 
 static Timer* bullet_spawn_timer;
 static Timer* zombie_spawn_timer;
+
+static int score = 0;
+static int highest_score = 0;
 
 
 static void spawn_bullet(void* sender)
@@ -66,7 +70,16 @@ static void spawn_zombie(void* sender)
         exit(1);
     }
 
-    zombie_init(zombie, ((Player*)sender)->entity, (Vector2) { 100, 100 }, false);
+    int randomWidth = rand() % GetScreenWidth();
+    int randomHeight = rand() % GetScreenHeight();
+
+    while (Vector2Distance((Vector2) { randomWidth, randomHeight }, player->entity->position) < 300)
+    {
+        randomWidth = rand() % GetScreenWidth();
+        randomHeight = rand() % GetScreenHeight();
+    }
+
+    zombie_init(zombie, ((Player*)sender)->entity, (Vector2) { randomWidth, randomHeight }, false);
 
     arrpush(zombies, *zombie);
 }
@@ -74,6 +87,15 @@ static void spawn_zombie(void* sender)
 
 static void init_game()
 {
+    srand(time(NULL));
+
+    if (score > highest_score)
+    {
+        highest_score = score;
+    }
+
+    score = 0;
+
     // release bullets if it exist
     if (bullets != NULL)
     {
@@ -154,9 +176,35 @@ static void update()
     {
         Zombie zombie = zombies[i];
 
+        // Check collision for player and zombie
         if (CheckCollisionCircles(player->entity->position, player->radius, zombie.entity->position, zombie.radius))
         {
             player->intersecting_zombie = &zombie;
+        }
+    }
+
+    // Why 2 separate loop? because it's more stable!
+
+    if (zombies != NULL && bullets != NULL)
+    {
+        for (size_t i = arrlen(zombies); i-- > 0;)
+        {
+            Zombie zombie = zombies[i];
+
+            for (size_t j = arrlen(bullets); j-- > 0;)
+            {
+                Bullet bullet = bullets[j];
+
+                // Check collision for zombie and bullet
+                if (CheckCollisionCircles(zombie.entity->position, zombie.radius, bullet.entity->position, bullet.radius))
+                {
+                    arrdel(bullets, j);
+                    arrdel(zombies, i);
+                    
+                    zombie_spawn_timer->wait_time -= 0.01f; // make zombie spawn faster every time you killed one
+                    score++;
+                }
+            }
         }
     }
 
@@ -198,6 +246,20 @@ static void update()
 static void draw_ui()
 {
     DrawRectangle(10, 10, player->health, 30, GREEN);
+    DrawText("Score: ", 10, 50, 30, WHITE);
+
+    char score_str[10];
+    sprintf(score_str, "%d", score);
+
+    DrawText(score_str, 115, 50, 30, WHITE);
+
+    DrawText("Highest Score: ", 10, 80, 30, WHITE);
+
+    char highest_score_str[10];
+    sprintf(highest_score_str, "%d", highest_score);
+
+    DrawText(highest_score_str, 240, 80, 30, WHITE);
+
 }
 
 
