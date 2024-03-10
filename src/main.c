@@ -66,7 +66,7 @@ static void spawn_zombie(void* sender)
         exit(1);
     }
 
-    zombie_init(zombie, ((Player*)sender)->entity, (Vector2){ 100, 100 }, false);
+    zombie_init(zombie, ((Player*)sender)->entity, (Vector2) { 100, 100 }, false);
 
     arrpush(zombies, *zombie);
 }
@@ -125,6 +125,7 @@ static void init_game()
     }
 
     timer_init(bullet_spawn_timer, 0.1f, false, false, spawn_bullet);
+    timer_start(bullet_spawn_timer);
 
 
     // zombie_spawn_timer
@@ -138,6 +139,7 @@ static void init_game()
     }
 
     timer_init(zombie_spawn_timer, 1.0f, false, false, spawn_zombie);
+    timer_start(zombie_spawn_timer);
 }
 
 
@@ -146,7 +148,7 @@ static void update()
     timer_update(bullet_spawn_timer, NULL);
     timer_update(zombie_spawn_timer, player);
 
-    player_update(player);
+    player->intersecting_zombie = NULL;
 
     for (size_t i = 0; i < arrlen(zombies); i++)
     {
@@ -154,20 +156,11 @@ static void update()
 
         if (CheckCollisionCircles(player->entity->position, player->radius, zombie.entity->position, zombie.radius))
         {
-            Zombie zombie = zombies[i];
-
             player->intersecting_zombie = &zombie;
-            player->is_intersecting_with_zombie = true;
-        }
-        else
-        {
-            player->intersecting_zombie = NULL;
-            player->is_intersecting_with_zombie = false;
         }
     }
 
-
-    timer_update(player->hurt_timer, player);
+    player_update(player);
 
     if (player->health <= 0)
     {

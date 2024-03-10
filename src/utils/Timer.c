@@ -13,7 +13,7 @@ void timer_init(Timer* timer, float wait_time, bool is_oneshot, bool is_on_the_h
 	}
 
 	timer->time = 0;
-	timer->is_paused = false;
+	timer->is_paused = true;
 	timer->is_oneshot = is_oneshot;
 	timer->wait_time = wait_time;
 	timer->is_on_the_heap = is_on_the_heap;

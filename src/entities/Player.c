@@ -32,18 +32,18 @@ void player_init(Player* player, Vector2 position, bool is_on_the_heap)
     player->speed = 100;
 
     player->is_on_the_heap = is_on_the_heap;
-    player->is_intersecting_with_zombie = false;
 
     player->hurt_timer = malloc(sizeof(Timer));
 
-    timer_init(player->hurt_timer, 0.5f, false, true, player_hurt);
+    timer_init(player->hurt_timer, 1.0f, false, true, player_hurt);
+    timer_start(player->hurt_timer);
 }
 
 void player_hurt(void* sender)
 {
     Player* player = (Player*)(sender);
 
-    if (player->is_intersecting_with_zombie)
+    if (player->intersecting_zombie != NULL)
     {
         player->health -= player->intersecting_zombie->damage;
     }
@@ -51,6 +51,8 @@ void player_hurt(void* sender)
 
 void player_update(Player* player)
 {
+    timer_update(player->hurt_timer, player);
+
     Vector2 direction = { 0, 0 };
 
     if (IsKeyDown(KEY_A))

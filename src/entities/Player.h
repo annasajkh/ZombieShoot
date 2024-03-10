@@ -13,7 +13,6 @@ typedef struct Player
     float health;
     float speed;
 
-    bool is_intersecting_with_zombie;
     bool is_on_the_heap;
 
     Timer* hurt_timer;
