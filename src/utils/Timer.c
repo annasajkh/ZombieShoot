@@ -49,7 +49,7 @@ void timer_update(Timer* timer, void* sender)
 	}
 }
 
-void timer_delete(Timer* timer)
+void delete_timer(Timer* timer)
 {
 	if (timer->is_on_the_heap)
 	{

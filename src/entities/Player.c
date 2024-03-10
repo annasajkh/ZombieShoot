@@ -94,7 +94,7 @@ void player_delete(Player* player)
 
     if (player->is_on_the_heap)
     {
-        timer_delete(player->hurt_timer);
+        delete_timer(player->hurt_timer);
         free(player);
     }
 }
