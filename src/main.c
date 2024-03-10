@@ -137,7 +137,7 @@ static void init_game()
 
 
     // bullet_spawn_timer
-    bullet_spawn_timer = alloca(sizeof(Timer));
+    bullet_spawn_timer = malloc(sizeof(Timer));
 
     if (bullet_spawn_timer == NULL)
     {
@@ -146,12 +146,12 @@ static void init_game()
         exit(1);
     }
 
-    timer_init(bullet_spawn_timer, 0.1f, false, false, spawn_bullet);
+    timer_init(bullet_spawn_timer, 0.1f, false, true, spawn_bullet);
     timer_start(bullet_spawn_timer);
 
 
     // zombie_spawn_timer
-    zombie_spawn_timer = alloca(sizeof(Timer));
+    zombie_spawn_timer = malloc(sizeof(Timer));
 
     if (zombie_spawn_timer == NULL)
     {
@@ -160,7 +160,7 @@ static void init_game()
         exit(1);
     }
 
-    timer_init(zombie_spawn_timer, 1.0f, false, false, spawn_zombie);
+    timer_init(zombie_spawn_timer, 1.0f, false, true, spawn_zombie);
     timer_start(zombie_spawn_timer);
 }
 
